@@ -175,7 +175,6 @@ namespace ConsoleTask
                 return value;
             }
         }
-
         static string ReadNonEmptyString(string message)
         {
             while (true)
@@ -192,7 +191,6 @@ namespace ConsoleTask
                 return input.Trim();
             }
         }
-
         static void Pause()
         {
             Console.WriteLine("Натисни Enter...");
