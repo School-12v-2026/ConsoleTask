@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace ConsoleTask
         public void AddTask(string name)
         {
             tasks.Add(new Task(name));
+            SaveToFile();
+
         }
 
         public bool CompleteTask(int index)
@@ -31,6 +34,7 @@ namespace ConsoleTask
                 return false;
 
             tasks[index].IsCompleted = true;
+            SaveToFile();
             return true;
         }
 
@@ -40,18 +44,51 @@ namespace ConsoleTask
                 return false;
 
             tasks.RemoveAt(index);
+            SaveToFile();
             return true;
         }
 
-        public void SortByName()
+        public void SortName()
         {
             tasks = tasks.OrderBy(t => t.Name).ToList();
+            SaveToFile();
         }
 
-        public void SortByStatus()
+        public void SortStatus()
         {
             tasks = tasks.OrderBy(t => t.IsCompleted).ToList();
+            SaveToFile();
         }
+
+        public void SaveToFile()
+        {
+            using (StreamWriter writer = new StreamWriter("tasks.txt"))
+            {
+                foreach (var task in tasks)
+                {
+                    writer.WriteLine($"{task.Name}|{task.IsCompleted}");
+                }
+            }
+        }
+
+        public void LoadFromFile()
+        {
+            if (File.Exists("tasks.txt"))
+            {
+                var lines = File.ReadAllLines("tasks.txt");
+
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('|');
+
+                    tasks.Add(new Task(parts[0])
+                    {
+                        IsCompleted = bool.Parse(parts[1])
+                    });
+                }
+            }
+        }
+
 
     }
 }
