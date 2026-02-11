@@ -89,12 +89,12 @@ namespace ConsoleTask
                         break;
 
                     case "6":
-                        manager.SortByName();
+                        manager.SortName();
                         Console.WriteLine("Tasks sorted by name.");
                         break;
 
                     case "7":
-                        manager.SortByStatus();
+                        manager.SortStatus();
                         Console.WriteLine("Tasks sorted by status.");
                         break;
 
