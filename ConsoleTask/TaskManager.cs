@@ -24,6 +24,8 @@ namespace ConsoleTask
         public void AddTask(string name)
         {
             tasks.Add(new Task(name));
+            SaveToFile();
+
         }
 
         public bool CompleteTask(int index)
@@ -32,6 +34,7 @@ namespace ConsoleTask
                 return false;
 
             tasks[index].IsCompleted = true;
+            SaveToFile();
             return true;
         }
 
@@ -41,17 +44,20 @@ namespace ConsoleTask
                 return false;
 
             tasks.RemoveAt(index);
+            SaveToFile();
             return true;
         }
 
         public void SortByName()
         {
             tasks = tasks.OrderBy(t => t.Name).ToList();
+            SaveToFile();
         }
 
         public void SortByStatus()
         {
             tasks = tasks.OrderBy(t => t.IsCompleted).ToList();
+            SaveToFile();
         }
 
         public void SaveToFile()
@@ -82,6 +88,7 @@ namespace ConsoleTask
                 }
             }
         }
+
 
     }
 }
