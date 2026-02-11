@@ -153,8 +153,6 @@ namespace ConsoleTask
             Pause();
         }
 
-        // ---------------- VALIDATION ----------------
-
         static int ReadIntInRange(string message, int min, int max)
         {
             while (true)
