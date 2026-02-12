@@ -48,13 +48,13 @@ namespace ConsoleTask
             return true;
         }
 
-        public void SortName()
+        public void SortByName()
         {
             tasks = tasks.OrderBy(t => t.Name).ToList();
             SaveToFile();
         }
 
-        public void SortStatus()
+        public void SortByStatus()
         {
             tasks = tasks.OrderBy(t => t.IsCompleted).ToList();
             SaveToFile();
