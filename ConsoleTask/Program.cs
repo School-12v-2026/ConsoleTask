@@ -47,13 +47,13 @@ namespace ConsoleTask
                     case 5:
                         manager.SortByName();
                         Console.WriteLine("Sorted by name.");
-                        Pause();
+                        ShowTasks(manager);
                         break;
 
                     case 6:
                         manager.SortByStatus();
                         Console.WriteLine("Sorted by status.");
-                        Pause();
+                        ShowTasks(manager);
                         break;
 
                     case 7:
