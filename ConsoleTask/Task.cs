@@ -15,12 +15,7 @@ namespace ConsoleTask
         {
             Name = name;
             IsCompleted = false;
-        }
-
-        public override string ToString()
-        {
-            return $"{Name} | {(IsCompleted ? "Завършена" : "Незавършена")}";
-        }
+        }       
 
     }
 }

@@ -6,108 +6,24 @@ namespace ConsoleTask
     {
         static void Main(string[] args)
         {
-            TaskManager manager = new TaskManager();
+            Console.Write("Enter username: ");
+            string username = Console.ReadLine();
 
-            manager.LoadFromFile();
-
-            bool running = true;
-
-            while (running)
+            if (string.IsNullOrWhiteSpace(username))
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\n===== TASK MANAGER =====");
-                Console.WriteLine("1. Add task");
-                Console.WriteLine("2. Show tasks");
-                Console.WriteLine("3. Complete task");
-                Console.WriteLine("4. Delete task");
-                Console.WriteLine("5. Exit");
-                Console.WriteLine("6. Sort by Name");
-                Console.WriteLine("7. Sort by Status");
-                Console.ResetColor();
-
-                Console.Write("Choose option: ");
-                string choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        Console.Write("Enter task name: ");
-                        string name = Console.ReadLine();
-                        manager.AddTask(name);
-                        Console.WriteLine("Task added!");
-                        break;
-
-                    case "2":
-                        var tasks = manager.GetAllTasks();
-
-                        if (tasks.Count == 0)
-                        {
-                            Console.WriteLine("No tasks available.");
-                        }
-                        else
-                        {
-                            for (int i = 0; i < tasks.Count; i++)
-                            {
-                                if (tasks[i].IsCompleted)
-                                    Console.ForegroundColor = ConsoleColor.Green;
-                                else
-                                    Console.ForegroundColor = ConsoleColor.Red;
-
-                                Console.WriteLine($"{i}. {tasks[i].Name} - {(tasks[i].IsCompleted ? "Completed" : "Not Completed")}");
-                                Console.ResetColor();
-                            }
-                        }
-                        break;
-
-                    case "3":
-                        Console.Write("Enter task index to complete: ");
-                        if (int.TryParse(Console.ReadLine(), out int completeIndex))
-                        {
-                            if (manager.CompleteTask(completeIndex))
-                                Console.WriteLine("Task completed!");
-                            else
-                                Console.WriteLine("Invalid index!");
-                        }
-                        break;
-
-                    case "4":
-                        Console.Write("Enter task index to delete: ");
-                        if (int.TryParse(Console.ReadLine(), out int deleteIndex))
-                        {
-                            if (manager.DeleteTask(deleteIndex))
-                                Console.WriteLine("Task deleted!");
-                            else
-                                Console.WriteLine("Invalid index!");
-                        }
-                        break;
-
-                    case "5":
-                        running = false;
-                        break;
-
-                    case "6":
-                        manager.SortByName();
-                        Console.WriteLine("Tasks sorted by name.");
-                        break;
-
-                    case "7":
-                        manager.SortByStatus();
-                        Console.WriteLine("Tasks sorted by status.");
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid choice!");
-                        break;
-                }
+                Console.WriteLine("Username cannot be empty.");
+                return;
             }
+
+            TaskManager manager = new TaskManager(username);
+            manager.LoadFromFile();
 
             while (true)
             {
                 Console.Clear();
                 PrintMenu();
 
-                int choice = ReadIntInRange("Избери опция: ", 1, 7);
-
+                int choice = ReadIntInRange("Choose option: ", 1, 7);
                 Console.Clear();
 
                 switch (choice)
@@ -130,13 +46,13 @@ namespace ConsoleTask
 
                     case 5:
                         manager.SortByName();
-                        Console.WriteLine("Сортирано по име.");
+                        Console.WriteLine("Sorted by name.");
                         Pause();
                         break;
 
                     case 6:
                         manager.SortByStatus();
-                        Console.WriteLine("Сортирано по статус.");
+                        Console.WriteLine("Sorted by status.");
                         Pause();
                         break;
 
@@ -146,31 +62,36 @@ namespace ConsoleTask
             }
         }
 
-        // ---------------- MENU ----------------
-
         static void PrintMenu()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-
-            Console.WriteLine("=== TASK MANAGER ===");
-            Console.WriteLine("1. Добави задача");
-            Console.WriteLine("2. Покажи всички задачи");
-            Console.WriteLine("3. Маркирай като завършена");
-            Console.WriteLine("4. Изтрий задача");
-            Console.WriteLine("5. Сортирай по име");
-            Console.WriteLine("6. Сортирай по статус");
-            Console.WriteLine("7. Изход");
-
+            Console.WriteLine("===== TASK MANAGER =====");
+            Console.WriteLine("1. Add task");
+            Console.WriteLine("2. Show tasks");
+            Console.WriteLine("3. Complete task");
+            Console.WriteLine("4. Delete task");
+            Console.WriteLine("5. Sort by Name");
+            Console.WriteLine("6. Sort by Status");
+            Console.WriteLine("7. Exit");
             Console.ResetColor();
             Console.WriteLine();
         }
 
         static void AddTask(TaskManager manager)
         {
-            string name = ReadNonEmptyString("Въведи име на задача: ");
-            manager.AddTask(name);
+            Console.Write("Enter task name: ");
+            string name = Console.ReadLine();
 
-            Console.WriteLine("Задачата е добавена.");
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                manager.AddTask(name.Trim());
+                Console.WriteLine("Task added.");
+            }
+            else
+            {
+                Console.WriteLine("Task name cannot be empty.");
+            }
+
             Pause();
         }
 
@@ -180,7 +101,7 @@ namespace ConsoleTask
 
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Няма задачи.");
+                Console.WriteLine("No tasks.");
                 Pause();
                 return;
             }
@@ -192,12 +113,12 @@ namespace ConsoleTask
                 if (tasks[i].IsCompleted)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Завършена");
+                    Console.WriteLine("Completed");
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Незавършена");
+                    Console.WriteLine("Not Completed");
                 }
 
                 Console.ResetColor();
@@ -212,17 +133,17 @@ namespace ConsoleTask
 
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Няма задачи.");
+                Console.WriteLine("No tasks.");
                 Pause();
                 return;
             }
 
             ShowTasks(manager);
 
-            int number = ReadIntInRange("Номер на задача: ", 1, tasks.Count);
+            int number = ReadIntInRange("Task number: ", 1, tasks.Count);
             manager.CompleteTask(number - 1);
 
-            Console.WriteLine("Задачата е маркирана.");
+            Console.WriteLine("Task completed.");
             Pause();
         }
 
@@ -232,17 +153,17 @@ namespace ConsoleTask
 
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Няма задачи.");
+                Console.WriteLine("No tasks.");
                 Pause();
                 return;
             }
 
             ShowTasks(manager);
 
-            int number = ReadIntInRange("Номер на задача за изтриване: ", 1, tasks.Count);
+            int number = ReadIntInRange("Task number to delete: ", 1, tasks.Count);
             manager.DeleteTask(number - 1);
 
-            Console.WriteLine("Задачата е изтрита.");
+            Console.WriteLine("Task deleted.");
             Pause();
         }
 
@@ -251,42 +172,17 @@ namespace ConsoleTask
             while (true)
             {
                 Console.Write(message);
-                string input = Console.ReadLine();
+                if (int.TryParse(Console.ReadLine(), out int value) &&
+                    value >= min && value <= max)
+                    return value;
 
-                if (!int.TryParse(input, out int value))
-                {
-                    Console.WriteLine("Моля въведи число.");
-                    continue;
-                }
-
-                if (value < min || value > max)
-                {
-                    Console.WriteLine($"Въведи число между {min} и {max}.");
-                    continue;
-                }
-
-                return value;
+                Console.WriteLine($"Enter number between {min} and {max}.");
             }
         }
-        static string ReadNonEmptyString(string message)
-        {
-            while (true)
-            {
-                Console.Write(message);
-                string input = Console.ReadLine();
 
-                if (string.IsNullOrWhiteSpace(input))
-                {
-                    Console.WriteLine("Текстът не може да е празен.");
-                    continue;
-                }
-
-                return input.Trim();
-            }
-        }
         static void Pause()
         {
-            Console.WriteLine("Натисни Enter...");
+            Console.WriteLine("Press Enter...");
             Console.ReadLine();
         }
     }

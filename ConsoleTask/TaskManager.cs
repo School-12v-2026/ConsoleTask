@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleTask
 {
     internal class TaskManager
     {
         private List<Task> tasks;
+        private string filePath;
 
-        public TaskManager()
+        public TaskManager(string username)
         {
             tasks = new List<Task>();
+            filePath = $"tasks_{username}.txt";
         }
 
         public List<Task> GetAllTasks()
@@ -25,7 +24,6 @@ namespace ConsoleTask
         {
             tasks.Add(new Task(name));
             SaveToFile();
-
         }
 
         public bool CompleteTask(int index)
@@ -62,7 +60,7 @@ namespace ConsoleTask
 
         public void SaveToFile()
         {
-            using (StreamWriter writer = new StreamWriter("tasks.txt"))
+            using (StreamWriter writer = new StreamWriter(filePath))
             {
                 foreach (var task in tasks)
                 {
@@ -73,22 +71,20 @@ namespace ConsoleTask
 
         public void LoadFromFile()
         {
-            if (File.Exists("tasks.txt"))
+            if (!File.Exists(filePath))
+                return;
+
+            var lines = File.ReadAllLines(filePath);
+
+            foreach (var line in lines)
             {
-                var lines = File.ReadAllLines("tasks.txt");
+                var parts = line.Split('|');
 
-                foreach (var line in lines)
+                tasks.Add(new Task(parts[0])
                 {
-                    var parts = line.Split('|');
-
-                    tasks.Add(new Task(parts[0])
-                    {
-                        IsCompleted = bool.Parse(parts[1])
-                    });
-                }
+                    IsCompleted = bool.Parse(parts[1])
+                });
             }
         }
-
-
     }
 }
